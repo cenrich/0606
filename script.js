@@ -40,12 +40,22 @@ const createSelects =(list, container) => {
 const fillSelects =list => {
     list.forEach(e=> {
         let select = document.getElementById (e.type) //por como asigné los id, seguro que hay un select cuyo id coincide con mi plato, y es ahí donde quiero poner mi option
-        let option = document.createElement("option")
-        option.innerText=e.name
-        option.id=e.id
-        select.appendChild(option)
+        if (!select.childElementCount) {
+            let placeholder = {name: `seleccione ${e.type}` , id:""}
+            select.appendChild(createOption(placeholder))
+        }
+        select.appendChild(createOption(e))
     })
 }
+
+//funcion de crear una opción
+const createOption = elem => {
+    let option=document.createElement ("option")
+    option.innerText=elem.name
+    option.value =elem.id
+    return option
+}
+
 
 //4. una función que ponga en cada select una opción vacía como placeholder.
 const emptyOption = list => {
@@ -57,11 +67,10 @@ const emptyOption = list => {
     })
 }
 
-
 //inicialización del programa
 const initialize = () => {
     let mainDiv = document.getElementById("selects")
     createSelects (plateTypes, mainDiv)
-    emptyOption(plateTypes)
+    // emptyOption(plateTypes)
     fillSelects(menu)
 }
