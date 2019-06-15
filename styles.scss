@@ -27,6 +27,9 @@
             color:red;
             font-weight:bold;
         }
-        @include childs()
+        @include childs();
+        .done {
+            margin:10px;
+        }
     } 
 }

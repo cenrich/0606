@@ -69,7 +69,7 @@ const emptyOption = list => {
 }
 
 
-var createButton=function(classBtn, index, btnFunction){
+let createButton=function(classBtn, index, btnFunction){
     btn=document.createElement('button')
     btn.classList.add(classBtn)
     btn.innerText=classBtn
@@ -78,8 +78,10 @@ var createButton=function(classBtn, index, btnFunction){
     return btn
 }
 
-var done = function (btn) {
-    orderList.splice (btn.id,1)
+let done = function (btn) {
+    // orderList.splice (btn.id,1)
+    orderList[btn.id].toPrepare=!orderList[btn.id].toPrepare
+
     printOrders()
 }
 
@@ -88,7 +90,8 @@ const printOrders=() => {
     container.innerHTML=""
     orderList.forEach ((order,index) => {
         let orderUl= document.createElement("ul")
-        order.forEach(plate=>{
+        orderUl.appendChild(createButton('done', index,done))
+        order.plateSelection.forEach(plate=>{
             let plateLi=document.createElement("li")
             plateLi.innerText=plate.name
             orderUl.appendChild(plateLi)
@@ -96,8 +99,7 @@ const printOrders=() => {
         let priceLi =document.createElement("li")
         priceLi.innerText =totalPrice(order)
         orderUl.appendChild(priceLi)
-        orderUl.appendChild(createButton('done', index,done))
-        container.appendChild(orderUl)
+        order.toPrepare?container.appendChild(orderUl):null
     })
 }
 
@@ -112,8 +114,8 @@ const printOrders=() => {
 
 //ahora si todos coinciden con lapromo, hay un descuente 
 const totalPrice= order=> {
-    let price=order.map((e=>e.price)).reduce((a,b)=>a+b)
-    let promo=order.map(e=>e.promo).reduce((a,b)=>a===b? a:undefined)
+    let price=order.plateSelection.map((e=>e.price)).reduce((a,b)=>a+b)
+    let promo=order.plateSelection.map(e=>e.promo).reduce((a,b)=>a===b? a:undefined)
     switch (promo) {
         case "1":
         return price*.8
@@ -142,14 +144,15 @@ const initialize = () => {
 
 //Quiero confirmar el menú
 const createOrder =() => {
-    let order=[]
+    let order ={plateSelection:[], toPrepare:true, id:""}
     plateTypes.forEach (e=> {
         let select =document.getElementById(e)
         // acá falta algo
         let plate = menu.find(e=>e.id===select.value)
-        order.push(plate)
+        order.plateSelection.push(plate)
         select.value=""
     })
+    order.id=`order00${orderList.length}`
     orderList.push(order)
     printOrders()
 }

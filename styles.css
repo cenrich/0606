@@ -95,5 +95,8 @@
 #orders ul:nth-child(10):hover {
   z-index: 9999;
 }
+#orders ul .done {
+  margin: 10px;
+}
 
 /*# sourceMappingURL=styles.css.map */
